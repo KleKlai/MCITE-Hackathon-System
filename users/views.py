@@ -16,19 +16,20 @@ from rest_framework.authtoken.models import Token
 class Login(APIView):
     """login
     """
-    serializer_class = LoginSerializer
-    permission_classes = (AllowAny,)
 
-    def post(self,*args,**kwargs):
-        serializer = self.serializer_class(
-            data=self.request.data, request=self.request)
+    serializer_class = LoginSerializer # serializer class for turning data into JSON serializable data 
+    permission_classes = (AllowAny,) # allow any authenticated/unauthenticated users to view the API
 
-        serializer.is_valid(raise_exception=True)
-        token, _ = Token.objects.get_or_create(user=serializer.user)
+    def post(self,*args,**kwargs): # post request will always be used when passing data to the API
+        serializer = self.serializer_class( # validate data below
+            data=self.request.data, request=self.request) # self.request.data (this are all the data passed from the front-end (Angular 7 services) ) 
 
-        return Response({
+        serializer.is_valid(raise_exception=True) # check if data are all valid, this will return True, or else it will return a exception error
+        token, _ = Token.objects.get_or_create(user=serializer.user) # create a token for the user, for user authentication in Angular
+
+        return Response({ # return a token for user authentication in Angular
             'token': token.key,
-        }, status=200, headers={'Authorization': 'Token {}'.format(token.key)})
+        }, status=200, headers={'Authorization': 'Token {}'.format(token.key)}) 
 
 
 class Register(APIView):
@@ -42,14 +43,14 @@ class Register(APIView):
         serializer = self.serializer_class(
             data=self.request.data)
         
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid(raise_exception=True) # check if the data are all valid, this will return True, or else it will return a exception error
     
-        user = serializer.save()
-        user.set_password(serializer.data['password'])  
-        user.save()
+        user = serializer.save() # if data are valid, it will create a new user, hence if the data are invalid, it means the user acount already existed or has incorrect format typed in the form fields
+        user.set_password(serializer.data['password'])  # sets the password for the user
+        user.save() # finally save the user model changes after setting a password
 
-        token, _ = Token.objects.get_or_create(user=user)
+        token, _ = Token.objects.get_or_create(user=user) # create a token for the user
         
-        return Response({
+        return Response({ # return a token for user authentication in Angular
             'token': token.key,
         }, status=200, headers={'Authorization': 'Token {}'.format(token.key)})
