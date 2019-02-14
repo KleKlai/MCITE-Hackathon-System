@@ -34,10 +34,12 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
+  // After creating component declare the class of the component here
   AppComponent
 
   ],
   imports: [
+  // All imported modules are to be declared as imports to be used on the app
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
@@ -47,6 +49,7 @@ const routes: Routes = [
   ],
   providers: [
   {
+  // This will check every request if the user is authenticated or not, it will check for a token in every request
     provide: HTTP_INTERCEPTORS,
     useClass: TokenService,
     multi: true

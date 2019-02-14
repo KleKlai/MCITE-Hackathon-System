@@ -3,9 +3,7 @@ from django.contrib.auth import views as auth_views
 from . import views
 from rest_framework import routers
 	
-	"""
-	links for the API endpoint
-	"""
+	#links for API endpoint
 urlpatterns = [
 
     path('login/', views.Login.as_view()),
